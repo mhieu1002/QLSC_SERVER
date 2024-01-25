@@ -64,7 +64,8 @@ const updateProblem = async (
       },
     });
 
-    if (user.role !== ROLE.SUPER_ADMIN && problem?.departmentId !== user.id) {
+    
+    if (user.role !== ROLE.SUPER_ADMIN && problem?.adminUserId !== user.id) {  
       return res.status(403).json({
         message: "You are not allowed to update this problem",
       });

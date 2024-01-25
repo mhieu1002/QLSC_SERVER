@@ -17,6 +17,7 @@ const adminMiddleware = async (
         id,
       },
     });
+    console.log(user)
     if (!user) {
       throw new BadRequest({
         message: "Unauthorized",

@@ -61,3 +61,19 @@ model Problem {
   updatedAt      DateTime  @updatedAt
   deleted        DateTime?
 }
+
+
+model PrinterRepairRegistrationForm {
+  id             Int       @id @default(autoincrement())
+  adminUserId    Int
+  departmentId   Int
+  title          String
+  Content        String
+  status         String
+  processingDate DateTime?
+  note           String?
+  reciever       String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deleted        DateTime?
+}

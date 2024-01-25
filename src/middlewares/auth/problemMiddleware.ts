@@ -20,7 +20,10 @@ const problemMiddleware = async (
     const adminUser = await prisma.adminUser.findUnique({
       where: {
         id,
-        role,
+        role : {
+          contains: role,
+          mode: "insensitive"
+        },
       },
     });
     if (adminUser) {
@@ -33,6 +36,7 @@ const problemMiddleware = async (
         id,
       },
     });
+
     if (admin) {
       req.user = omit(
         {
@@ -43,7 +47,6 @@ const problemMiddleware = async (
       );
       return next();
     }
-
     throw new BadRequest({
       message: "Unauthorized",
     });
