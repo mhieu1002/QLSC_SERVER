@@ -56,7 +56,7 @@ model Problem {
   status         String
   processingDate DateTime?
   note           String?
-  reciever       String
+  reciever       String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   deleted        DateTime?
@@ -67,12 +67,14 @@ model PrinterRepairRegistrationForm {
   id             Int       @id @default(autoincrement())
   adminUserId    Int
   departmentId   Int
-  title          String
-  Content        String
+  prinf          String
+  location       String
+  noteUser        String
   status         String
   processingDate DateTime?
-  note           String?
-  reciever       String
+  noteAdmin      String?
+  reciever       String?
+  isConfirmed    Boolean @default(false)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   deleted        DateTime?
