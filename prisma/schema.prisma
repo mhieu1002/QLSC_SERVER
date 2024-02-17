@@ -62,20 +62,33 @@ model Problem {
   deleted        DateTime?
 }
 
-
 model PrinterRepairRegistrationForm {
   id             Int       @id @default(autoincrement())
   adminUserId    Int
   departmentId   Int
   prinf          String
   location       String
-  noteUser        String
+  noteUser       String
   status         String
   processingDate DateTime?
   noteAdmin      String?
   reciever       String?
-  isConfirmed    Boolean @default(false)
+  isConfirmed    Boolean   @default(false)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   deleted        DateTime?
+}
+
+model Meeting {
+  id           Int       @id @default(autoincrement())
+  adminUserId  Int
+  departmentId Int
+  title        String
+  startTime    DateTime
+  endTime      DateTime
+  host         String
+  room         String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deleted      DateTime?
 }
