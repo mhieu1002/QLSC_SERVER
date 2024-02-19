@@ -39,6 +39,7 @@ const createPrinf = async (req: Request, res: Response, next: NextFunction) => {
       data: newPrinf,
     });
   } catch (error) {
+    console.log(error)
     next(error);
   }
 };
@@ -95,6 +96,46 @@ const updatePrinf = async (req: Request, res: Response, next: NextFunction) => {
         },
       });
     }
+
+    res.status(200).json({
+      message: "Prinf updated",
+      data: newPrinf,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updatePrinfConfirmed = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const user = req.user as any;
+    const {
+      isConfirmed
+    } = req.body;
+
+    const findPrinf = await prisma.printerRepairRegistrationForm.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (user.role !== ROLE.SUPER_ADMIN && findPrinf?.adminUserId !== user.id) {  
+      return res.status(403).json({
+        message: "You are not allowed to update this prinf",
+      });
+    }
+
+    const newPrinf = await prisma.printerRepairRegistrationForm.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        isConfirmed
+      },
+    });
+
 
     res.status(200).json({
       message: "Prinf updated",
@@ -437,4 +478,4 @@ const getPrinfById = async (
 //   }
 // };
 
-export { createPrinf, updatePrinf, deletePrinf, getAllPrinf, getPrinfById };
+export { createPrinf, updatePrinf, deletePrinf, getAllPrinf, getPrinfById, updatePrinfConfirmed };
