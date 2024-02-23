@@ -31,6 +31,8 @@ app.use("/api", rootRouter);
 app.use(errorHandler);
 
 http.createServer(app).listen(port, () => {
+  const a = new Date("2024-02-22 06:53:56.276")
+  console.log("🚀 ~ http.createServer ~ a:")
   // eslint-disable-next-line no-console
   console.log(`Server listening on port ${port}`);
 });
