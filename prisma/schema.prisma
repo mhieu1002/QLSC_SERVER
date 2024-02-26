@@ -33,6 +33,7 @@ model AdminUser {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   deleted      DateTime?
+  meeting      Meeting[]
 }
 
 model Department {
@@ -92,4 +93,6 @@ model Meeting {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deleted      DateTime?
+
+  adminUser    AdminUser @relation(fields: [adminUserId], references: [id])
 }
