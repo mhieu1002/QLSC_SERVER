@@ -69,7 +69,11 @@ const addMeeting = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 // Sửa lịch họp theo id
-const updateMeetingById = async (req: Request, res: Response, next: NextFunction) => {
+const updateMeetingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
     const user = req.user as any;
@@ -143,7 +147,11 @@ const updateMeetingById = async (req: Request, res: Response, next: NextFunction
 };
 
 // Xóa lịch họp theo id
-const deleteMeetingById = async (req: Request, res: Response, next: NextFunction) => {
+const deleteMeetingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
@@ -175,10 +183,18 @@ const deleteMeetingById = async (req: Request, res: Response, next: NextFunction
 };
 
 // Xem tất cả lịch họp
-const getAllMeetings = async (req: Request, res: Response, next: NextFunction) => {
+const getAllMeetings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     // Lấy tất cả các cuộc họp từ cơ sở dữ liệu
-    const allMeetings = await prisma.meeting.findMany();
+    const allMeetings = await prisma.meeting.findMany({
+      include: {
+        adminUser: true, // Đảm bảo rằng bạn đã thiết lập mối quan hệ giữa meeting và adminUser trong file Prisma
+      },
+    });
 
     res.status(200).json({
       message: "All meetings retrieved",
@@ -191,7 +207,11 @@ const getAllMeetings = async (req: Request, res: Response, next: NextFunction) =
 };
 
 // Xem lịch họp theo id
-const getMeetingById = async (req: Request, res: Response, next: NextFunction) => {
+const getMeetingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
