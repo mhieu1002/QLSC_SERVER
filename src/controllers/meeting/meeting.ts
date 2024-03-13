@@ -8,6 +8,7 @@ import { prisma } from "../../db";
 import { BadRequest } from "../../middlewares/request-handlers";
 import { convertDurationTodateRanges, dateToISOString } from "../../utils/Date";
 import { PRINF_STATUS } from "../../constants/prinf";
+import { Admin } from '@prisma/client';
 
 // Thêm lịch họp
 const addMeeting = async (req: Request, res: Response, next: NextFunction) => {
@@ -21,6 +22,7 @@ const addMeeting = async (req: Request, res: Response, next: NextFunction) => {
       participants,
       startTime,
       endTime,
+      pdfFile, // Thêm trường này vào phần xử lý yêu cầu
     } = req.body;
 
     // Kiểm tra xem thời gian bắt đầu và kết thúc là hợp lệ
@@ -56,6 +58,7 @@ const addMeeting = async (req: Request, res: Response, next: NextFunction) => {
         participants,
         startTime,
         endTime,
+        pdfFile, // Thêm trường này vào dữ liệu tạo mới
       },
     });
     res.status(201).json({
@@ -86,6 +89,7 @@ const updateMeetingById = async (
       participants,
       startTime,
       endTime,
+      pdfFile, // Thêm trường này vào phần xử lý yêu cầu
     } = req.body;
 
     // Kiểm tra xem cuộc họp tồn tại
@@ -95,6 +99,7 @@ const updateMeetingById = async (
       },
     });
 
+    // Xác thực người dùng và kiểm tra quyền truy cập user.role !== ROLE.SUPER_ADMIN && existingMeeting?.adminUserId !== user.id
     if (user.role !== ROLE.SUPER_ADMIN && meeting?.adminUserId !== user.id) {
       return res.status(404).json({ message: "Meeting not found" });
     }
@@ -133,6 +138,7 @@ const updateMeetingById = async (
         participants,
         startTime,
         endTime,
+        pdfFile, // Thêm trường này vào dữ liệu cập nhật
       },
     });
 
@@ -154,7 +160,7 @@ const deleteMeetingById = async (
 ) => {
   try {
     const { id } = req.params;
-
+    const user = req.user as any;
     // Kiểm tra xem cuộc họp tồn tại
     const existingMeeting = await prisma.meeting.findUnique({
       where: {
@@ -162,19 +168,25 @@ const deleteMeetingById = async (
       },
     });
 
+    // Kiểm tra quyền truy cập
     if (!existingMeeting) {
       return res.status(404).json({ message: "Meeting not found" });
+    }
+
+    if (user.role !== ROLE.SUPER_ADMIN && existingMeeting?.adminUserId !== user.id) {
+      return res.status(404).json({ message: "Unauthorized" });
     }
 
     // Xóa cuộc họp từ cơ sở dữ liệu
     await prisma.meeting.delete({
       where: {
-        id: parseInt(id),
+        id: existingMeeting.id,
       },
     });
 
     res.status(200).json({
       message: "Meeting deleted successfully",
+      status: 200
     });
   } catch (error) {
     console.log(error);

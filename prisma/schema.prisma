@@ -90,9 +90,11 @@ model Meeting {
   host         String
   room         String
   participants String
+  pdfFile      String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deleted      DateTime?
 
   adminUser    AdminUser @relation(fields: [adminUserId], references: [id])
 }
+
